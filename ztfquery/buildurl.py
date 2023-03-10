@@ -31,7 +31,7 @@ KNOWN_SCIENCE_SUFFIXES = {
 
 # SOURCES
 DATA_BASEURL = "https://irsa.ipac.caltech.edu/ibe/data/ztf/products/"
-ZTFIRSA_BASE = ["/ref/", "/sci/", "/raw/", "/cal/"]
+ZTFIRSA_BASE = ["/ref/", "/sci/", "/raw/", "/cal/", "/deep/"]
 
 
 from .io import LOCALSOURCE, CCIN2P3_SOURCE
@@ -536,6 +536,72 @@ def reference_path(
     )
     return os.path.join(source, file_)
 
+# ------------------ #
+#  Deep References   #
+# ------------------ #
+# Field needs to be unpadded in the 2nd index?
+def reference_path(
+    paddedfield,
+    filtercode,
+    paddedccdid,
+    qid,
+    fieldprefix="000",
+    suffix=None,
+    source="",
+    verbose=True,
+):
+    """
+
+    filtercode: [2 digit string]
+        The filter name ('zg','zr','zi', or 'OO' for Bias)
+
+    paddedccdid: [2 digit string]
+        The ccd id [01,02,03....15,16]
+
+    qid: [1 digit string]
+        Which quadran [1,2,3,4]
+
+    suffix: [string]
+        Could be:
+        - log.txt
+        - refcov.fits
+        - refimg.fits
+        - refimlog.txt
+        - refpsfcat.fits
+        - refsexcat.fits
+        - refunc.fits
+
+    """
+    if verbose:
+        print(f"reference_path: {locals()}")
+
+    if suffix is None:
+        suffix = "refimg.fits"
+    source = _source_to_location_(source)
+    file_ = (
+        "ref/"
+        + fieldprefix
+        + "/field"
+        + paddedfield
+        + "/"
+        + filtercode
+        + "/ccd"
+        + paddedccdid
+        + "/q"
+        + qid
+        + "/ztf_"
+        + paddedfield
+        + "_"
+        + filtercode
+        + "_c"
+        + paddedccdid
+        + "_q"
+        + qid
+        + "_%s" % suffix
+    )
+    return os.path.join(source, file_)
+
+
 
 # ============= #
 #   TOOLS       #
@@ -576,6 +642,8 @@ def build_filename_from_dataframe(dataframe, suffix="sciimg.fits"):
         + "_"
         + suffix
     )
+
+
 
 
 def filename_to_url(filename, suffix=None, source="irsa", kind=None, **kwargs):
