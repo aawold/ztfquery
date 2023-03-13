@@ -539,8 +539,7 @@ def reference_path(
 # ------------------ #
 #  Deep References   #
 # ------------------ #
-# Field needs to be unpadded in the 2nd index?
-def reference_path(
+def deep_path(
     paddedfield,
     filtercode,
     paddedccdid,
@@ -573,13 +572,13 @@ def reference_path(
 
     """
     if verbose:
-        print(f"reference_path: {locals()}")
+        print(f"deep_path: {locals()}")
 
     if suffix is None:
         suffix = "refimg.fits"
     source = _source_to_location_(source)
     file_ = (
-        "ref/"
+        "deep/"
         + fieldprefix
         + "/field"
         + paddedfield
